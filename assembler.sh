@@ -36,13 +36,6 @@ if [ ! -s "$input" ]; then
 fi
 
 # 6/7. Assemble the program
-#
-# File format:
-#   line 1        -> N, how many raw data values follow
-#   next N lines  -> decimal values, each becomes one output byte
-#   remaining lines -> instructions "MNEMONIC,mode,operand"
-#                      mode is currently unused (always 0 in test files)
-#                      operand (decimal) becomes the instruction's second byte
 
 # Opcode table: mnemonic -> hex opcode byte
 declare -A OPCODES=(
@@ -53,13 +46,6 @@ declare -A OPCODES=(
     [PRINT]="24"
     [QUIT]="20"
 )
-# NOTE: SUB="10" is an UNVERIFIED GUESS, not confirmed by any provided
-# example file. Reasoning: LOAD=04, STORE=08, ADD=0c are consecutive
-# multiples of 4 (slots 1, 2, 3), and QUIT=20/PRINT=24 sit at slots 8
-# and 9 - leaving slots 4-7 (0x10, 0x14, 0x18, 0x1c) unused. SUB, as
-# the natural next arithmetic instruction after ADD, is guessed to
-# take the next slot: 0x10. Confirm this against a real sub.vsc file
-# or the course spec before relying on it.
 
 # Read all non-blank lines, stripping any Windows-style \r characters
 mapfile -t lines < <(tr -d '\r' < "$input" | grep -v '^[[:space:]]*$')
